@@ -1,0 +1,25 @@
+//
+   Created by root on 2/7/16.
+
+link(rel='stylesheet', type="text/css", href="/stylesheets/sidebar.css")
+
+mixin sb(buttons)
+        ul.sb_c(onsubmit="return false;")
+            each val, index in buttons
+                +sbButton(val)
+
+mixin sbButton(text)
+        li.sbButton_c= text
+
+mixin login
+    form.loginform
+        |Username
+        br
+        input(type="text", name="username")
+        br
+        |Password
+        br
+        input(type="password", name="username")
+        br
+        button(type="button")#sendLogin Login
+        button(type="button")#register Login

@@ -1,0 +1,16 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.content{
+    color: blue;
+}
+
+.banner {
+    color: blue;
+    background-color: rgba(64, 64, 64, 0.6);
+}

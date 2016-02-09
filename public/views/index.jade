@@ -1,0 +1,18 @@
+doctype html
+include sidebar
+html(lang="en", xmlns="http://www.w3.org/1999/xhtml")
+html
+    head
+        script(src="/javascripts/display.js")
+        link(rel='stylesheet', type="text/css", href="/stylesheets/style.css")
+        title= title
+    body
+        .banner
+            h1
+                | Banner!
+        if loggedIn
+            +sb(['foo', 'bar', 'Logout'])
+        else
+            +login
+        .content
+            h1= message

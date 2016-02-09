@@ -1,0 +1,21 @@
+.sb_c{
+    padding-left:0;
+    float: left;
+}
+
+.sbButton_c{
+    list-style: none;
+    padding-left:0;
+    background-color: #ffc653;
+    height: 20px;
+    width: 100px;
+    text-align: center;
+}
+
+.loginform{
+    text-align: center;
+    width: 150px;
+    border-style: solid;
+    padding: 10px;
+    float: left;
+}
