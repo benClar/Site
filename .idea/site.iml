@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file:///Users/benjaminclarke/Documents" />
+    <content url="file://$MODULE_DIR$/../..">
+      <excludeFolder url="file://$MODULE_DIR$/../../Aspyr" />
+      <excludeFolder url="file://$MODULE_DIR$/../../BD" />
+      <excludeFolder url="file://$MODULE_DIR$/../../BenClarkeAssignment2014" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Blogging" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Bristol" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Colloquy Transcripts" />
+      <excludeFolder url="file://$MODULE_DIR$/../../HFYNI Project" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Japanese Cinema" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Maze" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Microsoft User Data" />
+      <excludeFolder url="file://$MODULE_DIR$/../../My Documents" />
+      <excludeFolder url="file://$MODULE_DIR$/../../My Pictures" />
+      <excludeFolder url="file://$MODULE_DIR$/../../My Videos" />
+      <excludeFolder url="file://$MODULE_DIR$/../../RDC Connections" />
+      <excludeFolder url="file://$MODULE_DIR$/../../SimCity 4" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Text Edit" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Turkey Holiday" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Xcode" />
+    </content>
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

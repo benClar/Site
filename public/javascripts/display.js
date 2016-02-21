@@ -5,9 +5,9 @@
 
 
 function eventListeners(){
-    document.getElementById("sendLogin").addEventListener("click", function(){
-        submitLogin();
-    });
+    //document.getElementById("sendLogin").addEventListener("click", function(){
+    //    submit("sendLogin");
+    //});
 }
 
 (function(window, document, undefined){
@@ -22,7 +22,7 @@ function eventListeners(){
 
 })(window, document, undefined);
 
-function submitLogin(){
+function submit(sender){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {

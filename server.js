@@ -11,9 +11,11 @@ var fs              = require('fs');
 var session         = require('express-session');
 var cookieParser    = require('cookie-parser');
 var SQLiteStore     = require('connect-sqlite3')(session);
+var bodyParser      = require('body-parser')
+var sqlite3         = require('sqlite3').verbose();
+var db              = require('./models/index.js');
 
 SECRET = 'S3CR37';
-
 
 SQLiteStoreOptions = {
     table   : 'sessions',
@@ -47,11 +49,25 @@ app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser(SECRET));
 app.use(session(sessionOptions));
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+}));
 
-app.post(/.*/,function(req,res){
-    console.log("Cookies: ", req.cookies);
-    req.session.field = "test"
-    res.cookie('remember', true);
+app.post('/Login',function(req,res){
+    console.log("POST - login")
+    //console.log("Cookies: ", req.cookies);
+    //req.session.field = "test"
+    //res.cookie('remember', true);
+    res.send()
+});
+
+app.post('/Register',function(req,res){
+    console.log("POST - login")
+    //TODO: Set incoming username and passwords to user/ account models
+    //console.log("Cookies: ", req.cookies);
+    //req.session.field = "test"
+    //res.cookie('remember', true);
     res.send()
 });
 
@@ -65,7 +81,14 @@ http.createServer(function (req, res) {
 }).listen(80);
 
 app.get(/.*/, function(req, res) {
+    console.log("GET")
+    console.log(req.url)
     res.render('index',
         { title : 'Home', message: 'Text Body', loggedIn: onload.isLoggedIn()}
     )
 });
+
+db['User'].create({username:"test", email: "test@test.com"}).done(function(p) {
+        p.save()
+    }
+)

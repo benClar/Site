@@ -1,9 +1,9 @@
-.sb_c{
+.sb_c {
     padding-left:0;
     float: left;
 }
 
-.sbButton_c{
+.sbButton_c {
     list-style: none;
     padding-left:0;
     background-color: #ffc653;
@@ -12,10 +12,14 @@
     text-align: center;
 }
 
-.loginform{
+.loginform {
     text-align: center;
     width: 150px;
     border-style: solid;
     padding: 10px;
     float: left;
+}
+
+.logreg {
+    margin: 10px;
 }
