@@ -12,14 +12,14 @@ mixin sbButton(text)
         li.sbButton_c= text
 
 mixin login
-    form.loginform
+    form.loginform#loginform
         |Username
         br
-        input(type="text", name="username")
+        input(type="text", name="username")#username
         br
         |Password
         br
-        input(type="password", name="password")
+        input(type="password", name="password")#password
         br
-        button.logreg(type="submit", formmethod="post", formaction="Login")#sendLogin Login
-        button.logreg(type="submit", formmethod="post", formaction="Register")#sendReg Register
+        button.logreg(type="button")#sendLogin Login
+        button.logreg(type="button")#sendReg Register

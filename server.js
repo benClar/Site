@@ -59,16 +59,34 @@ app.post('/Login',function(req,res){
     //console.log("Cookies: ", req.cookies);
     //req.session.field = "test"
     //res.cookie('remember', true);
+    //    .done(function(obj){
+    //        //    obj.validate("test");
+    //        //});
     res.send()
 });
 
 app.post('/Register',function(req,res){
-    console.log("POST - login")
-    //TODO: Set incoming username and passwords to user/ account models
-    //console.log("Cookies: ", req.cookies);
+    console.log("POST - Register")
+    console.log("Cookies: ", req.cookies);
+    db['User'].alreadyRegistered(
+            req.body.username,
+            function() {db['User'].create({ //Success: No account exists - register
+                username: req.body.username,
+                Account : {
+                    password: req.body.password
+                }
+            }, {
+                include: [ db['Account'] ]
+            })},
+            function() {
+                //res.session.loggedIn = false;
+                res.send('Response done');
+            }  //Failure: Account already Exists
+    )
+
     //req.session.field = "test"
     //res.cookie('remember', true);
-    res.send()
+    //res.send()
 });
 
 https.createServer(httpOptions, app).listen(443, function() {
@@ -80,15 +98,10 @@ http.createServer(function (req, res) {
     res.end();
 }).listen(80);
 
-app.get(/.*/, function(req, res) {
+app.get('/', function(req, res) {
     console.log("GET")
     console.log(req.url)
     res.render('index',
         { title : 'Home', message: 'Text Body', loggedIn: onload.isLoggedIn()}
     )
 });
-
-db['User'].create({username:"test", email: "test@test.com"}).done(function(p) {
-        p.save()
-    }
-)
