@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
                 User.belongsToMany(models.MilitaryWeapon, {through: 'UserMilitaryWeapon'});
-                User.hasOne(models.Account);
+                User.belongsTo(models.Account);
             },
             alreadyRegistered: function(username, success, fail) {
                 User.findAndCountAll({where: {'username': username}}).then(function (result) {
@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         instanceMethods: {
             validate: function(pwd) {
-                console.log(this.Account.compare(pwd))
+                return this.Account.compare(pwd)
             },
 
         }

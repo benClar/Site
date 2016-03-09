@@ -4,12 +4,13 @@
 link(rel='stylesheet', type="text/css", href="/stylesheets/sidebar.css")
 
 mixin sb(buttons)
-        ul.sb_c(onsubmit="return false;")
+        ul.sb_c()
             each val, index in buttons
                 +sbButton(val)
 
-mixin sbButton(text)
-        li.sbButton_c= text
+mixin sbButton(button)
+        li.sbButton_c
+            a(id=button['id'])= button['text']
 
 mixin login
     form.loginform#loginform

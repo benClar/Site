@@ -40,7 +40,6 @@ module.exports = function(sequelize, DataTypes) {
 
     return Account;
 };
-// TODO Hook up register button
 // TODO figure out how to save records: done - remove force on sync of sequelize
 // TODO validating passwords
 // TODO testing
