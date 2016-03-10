@@ -14,10 +14,7 @@ html
                 | Banner!
         if loggedIn
             script(src="/javascripts/loggedIn.js")
-            +sb([
-                {text: 'foo', id:'foo'},
-                {text: 'bar', id:'bar'},
-                {text: 'Logout', id:'logoutButton'}])
+            +sb(renderedSidebar)
         else
             script(src="/javascripts/loggedOut.js")
             +login

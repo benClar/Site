@@ -28,9 +28,10 @@ function submit(url, data){
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             console.log("Response Recieved");
+            console.log(xhttp.responseText)
             var res = $.parseJSON(xhttp.responseText)
             if (res['redirect'] == true) {
-                window.location=res['url'];
+                window.location = res['url'];
             }
         }
     };

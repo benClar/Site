@@ -7,6 +7,11 @@
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define("User", {
         username: DataTypes.STRING,
+        userType: {
+            type:   DataTypes.ENUM(),
+            values: ['user', 'moderator', 'admin'],
+            defaultValue: 'user'
+        }
         //email: DataTypes.STRING
     }, {
         classMethods: {
@@ -19,16 +24,16 @@ module.exports = function(sequelize, DataTypes) {
                     if(result.count == 1){
                         console.log("Error: User Already Exists");
                         fail();
-                    } else{
+                    } else {
                         console.log("Success: Creating User");
                         success();
                     }
-                })
+                });
             }
         },
         instanceMethods: {
-            validate: function(pwd) {
-                return this.Account.compare(pwd)
+            validate: function(pwd, cb) {
+                return this.Account.compare(pwd, cb)
             },
 
         }

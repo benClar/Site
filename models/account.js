@@ -7,8 +7,9 @@ SALT_SIZE = 8
 module.exports = function(sequelize, DataTypes) {
     var Account = sequelize.define("Account", {
         salt: {
-            type: DataTypes.TEXT('medium'),
-            defaultValue: crypto.randomBytes(SALT_SIZE).toString('hex')
+            type: DataTypes.TEXT(),
+            // Wrapped in function to set different salt with each registration
+            defaultValue: function(){ return crypto.randomBytes(SALT_SIZE).toString('hex') }
         },
         password:   {
             type: DataTypes.TEXT,
@@ -26,14 +27,10 @@ module.exports = function(sequelize, DataTypes) {
             //},
         },
         instanceMethods: {
-            compare: function(pwd) {
+            compare: function(pwd, cb) {
                 var hash = crypto.createHash('sha256');
-                hash.update(pwd + this.salt)
-                if (this.password == hash.digest('hex')) {
-                    return true;
-                } else {
-                    return false;
-                }
+                hash.update(pwd + this.salt);
+                cb(this.password == hash.digest('hex'));
             }
         }
     });

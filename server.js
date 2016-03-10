@@ -58,21 +58,27 @@ app.post('/Login',function(req,res){
     console.log("POST - login")
     db['User'].findOne({ where: {username: req.body.username}, include : db['Account'] }).then(function(user){
         if (user) {
-            if (user.validate(req.body.password)) {
-                console.log("Login success")
-            } else {
-                console.log("Login failiure")
-            }
+            user.validate(req.body.password, function(success){
+                if (success) {
+                    console.log("success")
+                    req.session.loggedIn = true;
+                    req.session.username = req.body.username;
+                    res.send({redirect: true, url: '/'});
+                } else {
+                    res.send({redirect: false});
+                }
+                });
         } else {
-            console.log(req.body.username, " not found")
+            console.log(req.body.username, " not found");
+            res.send();
         }
     });
-    res.send()
 });
 
 app.post('/Logout',function(req,res){
     console.log("POST - Logout");
     req.session.loggedIn = false;
+    req.session.username = null;
     res.send({redirect: true, url: '/'});
 });
 
@@ -91,6 +97,7 @@ app.post('/Register',function(req,res){
             }).done(function() {
                     console.log("success: Account created")
                     req.session.loggedIn = true;
+                    req.session.username = req.body.username;
                     res.send({redirect: true, url: '/'});
                 }
             )},
@@ -111,13 +118,36 @@ http.createServer(function (req, res) {
     res.end();
 }).listen(80);
 
+
+function renderSidebar(req, renderCB){
+    console.log("rendering Siderbar");
+    var sidebar = [
+        {text: 'foo', id:'foo'},
+        {text: 'bar', id:'bar'},
+        {text: 'Logout', id:'logoutButton'}
+    ];
+    if(req.session.loggedIn)    {
+        return db['User'].findOne({ where: {username: req.session.username} })
+            .then( function(user) {
+                if(user.userType == "admin")    {
+                    sidebar.push({text: 'Forum Admin', id:'forumAdminButton'});
+                }
+            }).then(function(){
+                renderCB(sidebar);
+        });
+    } else {
+        renderCB(sidebar);
+    }
+}
+
 app.get('/', function(req, res) {
     console.log("GET")
-    console.log(req.url)
-    console.log(req.session.loggedIn)
-    res.render('index',
-        { title : 'Home', message: 'Text Body', loggedIn: req.session.loggedIn}
-    );
+    renderSidebar(req, function(sidebar) {
+        res.render('index',
+            { title : 'Home', message: 'Text Body', loggedIn: req.session.loggedIn, renderedSidebar: sidebar}
+        );
+    });
+
 });
 
 //TODO: refresh from login

@@ -14,8 +14,8 @@ function eventListeners_loggedOut(){
 }
 
 function sendRegistration(url){
-    var frm = $(document.getElementById('loginform'));
-    var data = JSON.stringify(formToDict(frm.serializeArray()));
+    var frm = $('#loginform').serializeArray();
+    var data = JSON.stringify(formToDict(frm));
     submit(url, data);
 }
 

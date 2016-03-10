@@ -5,7 +5,6 @@
 "use strict";
 
 function eventListeners_loggedIn(){
-    console.log("HERE")
     document.getElementById("logoutButton").addEventListener("click", function(){
         submit("/Logout", null);
     });
