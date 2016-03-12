@@ -54,6 +54,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
+
+shared = {app: app, db: db};
+
+var rs = require('./routes.js')(shared);
+
 app.post('/Login',function(req,res){
     console.log("POST - login")
     db['User'].findOne({ where: {username: req.body.username}, include : db['Account'] }).then(function(user){
@@ -122,15 +127,15 @@ http.createServer(function (req, res) {
 function renderSidebar(req, renderCB){
     console.log("rendering Siderbar");
     var sidebar = [
-        {text: 'foo', id:'foo'},
-        {text: 'bar', id:'bar'},
-        {text: 'Logout', id:'logoutButton'}
+        {button: {id:'foo'}, text: 'foo'},
+        {button: {id:'bar'}, text: 'bar'},
+        {button: {id:'logoutButton'}, text: 'Logout'},
     ];
     if(req.session.loggedIn)    {
         return db['User'].findOne({ where: {username: req.session.username} })
             .then( function(user) {
                 if(user.userType == "admin")    {
-                    sidebar.push({text: 'Forum Admin', id:'forumAdminButton'});
+                    sidebar.push({button: {id:'forumAdminButton', href: '/forumAdmin'}, text: 'Forum Admin'});
                 }
             }).then(function(){
                 renderCB(sidebar);
@@ -149,6 +154,8 @@ app.get('/', function(req, res) {
     });
 
 });
+
+
 
 //TODO: refresh from login
 //TODO: validate usernames/ passwords etc.

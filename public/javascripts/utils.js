@@ -10,3 +10,10 @@ function formToDict(formData){
         return obj;
     },{});
 }
+
+function ajaxRedirect(response){
+    var res = $.parseJSON(response)
+    if (res['redirect'] == true) {
+        window.location = res['url'];
+    }
+}

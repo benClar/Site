@@ -6,8 +6,16 @@
 
 function eventListeners_loggedIn(){
     document.getElementById("logoutButton").addEventListener("click", function(){
-        submit("/Logout", null);
+        submitPost("/Logout", null, ajaxRedirect);
     });
+
+    var forumAdmin = document.getElementById("forumAdminButton");
+    if(forumAdmin){
+        //forumAdmin.addEventListener("click", function(){
+        //    submitGet("/forumAdmin", null); //TODO: Maybe move the test for inclusion of this to server side
+        //});
+    }
+
 }
 
 (function(window, document, undefined){

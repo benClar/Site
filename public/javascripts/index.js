@@ -23,19 +23,31 @@ function eventListeners(){
 
 })(window, document, undefined);
 
-function submit(url, data){
+function submitPost(url, data, cb){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             console.log("Response Recieved");
             console.log(xhttp.responseText)
-            var res = $.parseJSON(xhttp.responseText)
-            if (res['redirect'] == true) {
-                window.location = res['url'];
+            if(cb){
+                cb(xhttp.responseText);
             }
+
         }
     };
     xhttp.open("POST", "https://localhost:443" + url)
     xhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
     xhttp.send(data);
+}
+
+function submitGet(url, cb, dataType) {
+    var request = {
+        url: url,
+        dataType: dataType
+    }
+    if(cb){
+        request['success'] = cb;
+
+    }
+    $.ajax(request);
 }
