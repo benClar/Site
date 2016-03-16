@@ -1,5 +1,6 @@
 doctype html
 include sidebar
+include pageBody
 html(lang="en", xmlns="http://www.w3.org/1999/xhtml")
 html
     head
@@ -19,4 +20,4 @@ html
             script(src="/javascripts/loggedOut.js")
             +login
         .content
-            h1= message
+            +#{contentType}(content)

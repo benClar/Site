@@ -15,7 +15,6 @@ module.exports = function(shared){
 
     shared.app.get('/forumAdmin', function(req,res){
         console.log('form admin get');
-        console.log(shared.db)
         renderForumAdmin(res);
     });
 

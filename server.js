@@ -14,6 +14,7 @@ var SQLiteStore     = require('connect-sqlite3')(session);
 var bodyParser      = require('body-parser')
 var sqlite3         = require('sqlite3').verbose();
 var db              = require('./models/index.js');
+var jrend    = require('./serverJavascript/jadeRendering.js');
 
 SECRET = 'S3CR37';
 
@@ -55,9 +56,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-shared = {app: app, db: db};
+shared = {app: app, db: db, jrend:jrend};
 
 var rs = require('./routes.js')(shared);
+
 
 app.post('/Login',function(req,res){
     console.log("POST - login")
@@ -146,13 +148,12 @@ function renderSidebar(req, renderCB){
 }
 
 app.get('/', function(req, res) {
-    console.log("GET")
+    console.log("GET");
     renderSidebar(req, function(sidebar) {
         res.render('index',
-            { title : 'Home', message: 'Text Body', loggedIn: req.session.loggedIn, renderedSidebar: sidebar}
+            jrend.renderJade('Home', "standardBody", 'Text Body', req.session.loggedIn, sidebar)
         );
     });
-
 });
 
 
