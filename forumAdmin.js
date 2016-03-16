@@ -5,8 +5,8 @@
 module.exports = function(shared){
 
 
-    function renderForumAdmin(res){
-
+    function renderForumAdmin(req, res){
+        shared.jRend.renderJade("Forum Board Manager", "boardManagerBody", req.session.loggedIn, sidebar);
     }
 
     function renderForumAdminSidebar(){
@@ -15,7 +15,7 @@ module.exports = function(shared){
 
     shared.app.get('/forumAdmin', function(req,res){
         console.log('form admin get');
-        renderForumAdmin(res);
+        renderForumAdmin(req, res);
     });
 
 }

@@ -14,7 +14,7 @@ var SQLiteStore     = require('connect-sqlite3')(session);
 var bodyParser      = require('body-parser')
 var sqlite3         = require('sqlite3').verbose();
 var db              = require('./models/index.js');
-var jrend    = require('./serverJavascript/jadeRendering.js');
+var jRend    = require('./serverJavascript/jadeRendering.js');
 
 SECRET = 'S3CR37';
 
@@ -56,7 +56,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-shared = {app: app, db: db, jrend:jrend};
+shared = {app: app, db: db, jRend:jRend};
 
 var rs = require('./routes.js')(shared);
 
@@ -125,39 +125,17 @@ http.createServer(function (req, res) {
     res.end();
 }).listen(80);
 
-
-function renderSidebar(req, renderCB){
-    console.log("rendering Siderbar");
-    var sidebar = [
-        {button: {id:'foo'}, text: 'foo'},
-        {button: {id:'bar'}, text: 'bar'},
-        {button: {id:'logoutButton'}, text: 'Logout'},
-    ];
-    if(req.session.loggedIn)    {
-        return db['User'].findOne({ where: {username: req.session.username} })
-            .then( function(user) {
-                if(user.userType == "admin")    {
-                    sidebar.push({button: {id:'forumAdminButton', href: '/forumAdmin'}, text: 'Forum Admin'});
-                }
-            }).then(function(){
-                renderCB(sidebar);
-        });
-    } else {
-        renderCB(sidebar);
-    }
-}
-
 app.get('/', function(req, res) {
     console.log("GET");
-    renderSidebar(req, function(sidebar) {
+    jRend.renderSidebar(db, req, function(sidebar) {
         res.render('index',
-            jrend.renderJade('Home', "standardBody", 'Text Body', req.session.loggedIn, sidebar)
+            jRend.renderJade('Home', "standardBody", 'Text Body', req.session.loggedIn, sidebar)
         );
     });
 });
 
 
 
-//TODO: refresh from login
 //TODO: validate usernames/ passwords etc.
 //TODO: Separate routes into different files
+//TODO: Forum admin board manager page
