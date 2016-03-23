@@ -4,32 +4,37 @@
 
 
 module.exports = {
-    renderJade: function (title, contentType, content, loggedIn, renderedSidebar) {
-        return {
-            "title": title,
-            "contentType": contentType,
-            "content": content,
-            "loggedIn": loggedIn,
-            "renderedSidebar": renderedSidebar
-        }
+    renderJade: function (db, req, res, template, title, contentType, content, loggedIn, renderWithSidebar) {
+            var body=  function(siderbar){
+                return {
+                    "title": title,
+                    "contentType": contentType,
+                    "content": content,
+                    "loggedIn": loggedIn,
+                    "renderedSidebar": siderbar
+                }
+            }
+        renderWithSidebar(db, req, res, template, body);
     },
-    renderSidebar: function(db, req, renderBodyCB){
+    stdSb: function(db, req, res, template, bodyToRender){
         var sidebar = [
             {button: {id:'foo'}, text: 'foo'},
             {button: {id:'bar'}, text: 'bar'},
-            {button: {id:'logoutButton'}, text: 'Logout'},
+
         ];
         if(req.session.loggedIn)    {
+            sidebar.push({button: {id:'logoutButton'}, text: 'Logout'})
             return db['User'].findOne({ where: {username: req.session.username} })
                 .then( function(user) {
                     if(user.userType == "admin")    {
                         sidebar.push({button: {id:'forumAdminButton', href: '/forumAdmin'}, text: 'Forum Admin'});
                     }
-                }).then(function(){
-                    renderBodyCB(sidebar);
+                    res.render(template, bodyToRender(sidebar));
                 });
-        } else {
-            renderBodyCB(sidebar);
         }
+        res.render(template, bodyToRender(sidebar));
+    },
+    forumAdminSb: function(db, req, res, template, bodyToRender){
+        module.exports.stdSb(db, req, res, template, bodyToRender);
     }
 };

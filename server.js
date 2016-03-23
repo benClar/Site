@@ -126,12 +126,8 @@ http.createServer(function (req, res) {
 }).listen(80);
 
 app.get('/', function(req, res) {
-    console.log("GET");
-    jRend.renderSidebar(db, req, function(sidebar) {
-        res.render('index',
-            jRend.renderJade('Home', "standardBody", 'Text Body', req.session.loggedIn, sidebar)
-        );
-    });
+    console.log("GET /");
+    jRend.renderJade(db, req, res, 'index', 'Home', "standardBody", 'Text Body', req.session.loggedIn, jRend.stdSb);
 });
 
 
