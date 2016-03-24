@@ -6,7 +6,6 @@ var express         = require('express');
 var https           = require('https');
 var http            = require('http');
 var app             = express();
-var onload          = require('./scripts/onload.js');
 var fs              = require('fs');
 var session         = require('express-session');
 var cookieParser    = require('cookie-parser');
@@ -127,11 +126,12 @@ http.createServer(function (req, res) {
 
 app.get('/', function(req, res) {
     console.log("GET /");
-    jRend.renderJade(db, req, res, 'index', 'Home', "standardBody", 'Text Body', req.session.loggedIn, jRend.stdSb);
+    template = jRend.jTemplate('index', 'Home', "standardBody", 'Text Body', req.session.loggedIn)
+    jRend.renderJade(db, req, res,  jRend.stdSb);
 });
 
 
 
 //TODO: validate usernames/ passwords etc.
-//TODO: Separate routes into different files
-//TODO: Forum admin board manager page
+//TODO: Forum admin board manager page : sidebar
+//TODO: make jade renderer stuff more oop
