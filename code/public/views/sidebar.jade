@@ -5,8 +5,8 @@ link(rel='stylesheet', type="text/css", href="/stylesheets/sidebar.css")
 
 mixin sb(buttons)
         ul.sb_c()
-            each val, index in buttons
-                +sbButton(val['button'], val['text'])
+            each val, index in sidebar['buttons']
+                +sbButton(val['attributes'], val['text'])
 
 mixin sbButton(button, text)
         li.sbButton_c

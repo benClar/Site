@@ -126,8 +126,15 @@ http.createServer(function (req, res) {
 
 app.get('/', function(req, res) {
     console.log("GET /");
-    template = jRend.jTemplate('index', 'Home', "standardBody", 'Text Body', req.session.loggedIn)
-    jRend.renderJade(db, req, res,  jRend.stdSb);
+    var template = new jRend.JTemplate(
+        'index',
+        'Home',
+        'standardBody',
+        'Text',
+        req.session.loggedIn,
+        new jRend.StandardSb(req.session.loggedIn),
+        new jRend.Renderer(db, req, res));
+    template.render();
 });
 
 
