@@ -45,6 +45,7 @@ var httpOptions = {
 };
 
 app.set('views', __dirname + '/public/views');
+app.use(require('express-promise')());
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser(SECRET));
@@ -126,18 +127,9 @@ http.createServer(function (req, res) {
 
 app.get('/', function(req, res) {
     console.log("GET /");
-    var template = new jRend.JTemplate(
-        'index',
-        'Home',
-        'standardBody',
-        'Text',
-        req.session.loggedIn,
-        new jRend.StandardSb(req.session.loggedIn),
-        new jRend.Renderer(db, req, res));
+    var template = new jRend.StdTemplate(db, req, res);
     template.render();
 });
-
-
 
 //TODO: validate usernames/ passwords etc.
 //TODO: Forum admin board manager page : sidebar
