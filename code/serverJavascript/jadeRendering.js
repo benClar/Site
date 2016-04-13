@@ -12,6 +12,8 @@ function JSidebar(buttons){
 }
 
 JSidebar.prototype.addButton = function(button){
+    console.log("Adding Button");
+    console.log(button.attributes.id)
     this.buttons.push(button);
 }
 
@@ -20,7 +22,7 @@ function JButton(attributes, text) {
         this.text = text;
  }
 
-function JTemplate(template, title, contentType, content, loggedIn, sidebar, renderer){
+function JTemplate(template, title, contentType, content, loggedIn, sidebar){
         this.template = template; //Jade template file
         this.contents =
         {
@@ -30,71 +32,66 @@ function JTemplate(template, title, contentType, content, loggedIn, sidebar, ren
             loggedIn: loggedIn,
             sidebar: sidebar
         };
-        this.renderer = renderer;
 }
 
-JTemplate.prototype.render = function(){
-    this.renderer.render(this);
-}
 
-function Renderer(db, req, res){
-    this.db = db;
-    this.req = req;
+function Renderer(template, res){
+    this.template = template;
     this.res = res;
 }
 
-Renderer.prototype.render = function(template){
-    this.res.render(template.template, template.contents);
+Renderer.prototype.render = function(){
+    var bRender = this.res.render.bind(this, this.template.template, this.template.contents);
+    this.template.contents.sidebar.setAdmin(bRender);
 };
 
-function StdTemplate(db, req, res){
+function StdTemplate(db, req){
     this.db = db;
     this.req = req;
-    this.res = res;
-    this.template = new JTemplate(
+    JTemplate.call(this,
         'index',
         'Home',
         'standardBody',
         'Text',
         req.session.loggedIn,
-        new StandardSb(req.session.loggedIn, isAdmin(this.db, req.session.username)),
-        new Renderer(db, req, res)
+        new StandardSb(req, db),
+        new Renderer(db, req)
     );
 }
 
-StdTemplate.prototype.render = function(){
-    this.template.render();
-};
+StdTemplate.prototype = Object.create(JTemplate.prototype);
+StdTemplate.prototype.constructor = StdTemplate;
 
-function StandardSb(isLoggedIn, isAdmin) {
+function StandardSb(req, db) {
 
     this.sidebar = new JSidebar();
     this.buttons = this.sidebar.buttons;
     this.sidebar.addButton(new module.exports.JButton({id: 'foo'}, 'foo'));
     this.sidebar.addButton(new module.exports.JButton({id: 'bar'}, 'bar'));
-
-    if(isLoggedIn){
-        this.sidebar.addButton(new module.exports.JButton({id:'logoutButton'}, 'Logout'));
+    if(req.session.loggedIn) {
+        this.sidebar.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
     }
-    if(isAdmin){
-        this.sidebar.addButton(new module.exports.JButton({id:'forumAdminButton', href: '/forumAdmin'}, 'Forum Admin'));
-    }
+    this.req = req;
+    this.db = db;
 }
 
-function isAdmin(db, username){
-    return db['User'].findOne({ where: {username: username} }).then(function(user)
+StandardSb.prototype.setAdmin = function(cb){
+    var stdSB = this;
+    this.db['User'].findOne({ where: {username: this.req.session.username}}).then(function(user)
     {
         if (user && user.userType == "admin") {
-            return true;
+            stdSB.sidebar.addButton(new module.exports.JButton({
+                id: 'forumAdminButton',
+                href: '/forumAdmin'
+            }, 'Forum Admin'));
         }
-        return false;
+        cb();
     });
-}
+};
 
 module.exports.JSidebar = JSidebar;
 module.exports.JButton = JButton;
 module.exports.JTemplate  = JTemplate;
 module.exports.Renderer = Renderer;
 module.exports.StandardSb = StandardSb;
-module.exports.isAdmin = isAdmin;
 module.exports.StdTemplate = StdTemplate;

@@ -2,6 +2,7 @@
  * Created by root on 2/6/16.
  */
 
+var Promise         = require("bluebird");
 var express         = require('express');
 var https           = require('https');
 var http            = require('http');
@@ -13,8 +14,7 @@ var SQLiteStore     = require('connect-sqlite3')(session);
 var bodyParser      = require('body-parser')
 var sqlite3         = require('sqlite3').verbose();
 var db              = require('./models/index.js');
-var jRend    = require('./serverJavascript/jadeRendering.js');
-
+var jRend           = require('./serverJavascript/jadeRendering.js');
 SECRET = 'S3CR37';
 
 SQLiteStoreOptions = {
@@ -127,8 +127,10 @@ http.createServer(function (req, res) {
 
 app.get('/', function(req, res) {
     console.log("GET /");
-    var template = new jRend.StdTemplate(db, req, res);
-    template.render();
+
+    var t = new jRend.StdTemplate(db, req);
+    var renderer = new jRend.Renderer(t, res);
+    renderer.render();
 });
 
 //TODO: validate usernames/ passwords etc.
