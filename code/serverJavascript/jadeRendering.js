@@ -12,8 +12,6 @@ function JSidebar(buttons){
 }
 
 JSidebar.prototype.addButton = function(button){
-    console.log("Adding Button");
-    console.log(button.attributes.id)
     this.buttons.push(button);
 }
 
@@ -23,12 +21,12 @@ function JButton(attributes, text) {
  }
 
 function JTemplate(template, title, contentType, content, loggedIn, sidebar){
-        this.template = template; //Jade template file
+        this.template = template;       // Jade template file
         this.contents =
         {
-            title: title, // Page title
-            contentType: contentType, //Mixin for page content
-            content: content, //params to mixin page content
+            title: title,               // Page title
+            contentType: contentType,   // Mixin for page content
+            content: content,           // params to mixin page content
             loggedIn: loggedIn,
             sidebar: sidebar
         };
@@ -40,22 +38,22 @@ function Renderer(template, res){
     this.res = res;
 }
 
+
 Renderer.prototype.render = function(){
-    var bRender = this.res.render.bind(this, this.template.template, this.template.contents);
-    this.template.contents.sidebar.setAdmin(bRender);
+    this.res.render(this.template.template, this.template.contents);
 };
 
 function StdTemplate(db, req){
     this.db = db;
     this.req = req;
+    // Call parent constructor
     JTemplate.call(this,
         'index',
         'Home',
         'standardBody',
         'Text',
         req.session.loggedIn,
-        new StandardSb(req, db),
-        new Renderer(db, req)
+        new StandardSb(req, db)
     );
 }
 
@@ -75,7 +73,7 @@ function StandardSb(req, db) {
     this.db = db;
 }
 
-StandardSb.prototype.setAdmin = function(cb){
+StandardSb.prototype.setAdmin = function(cb, a, b){
     var stdSB = this;
     this.db['User'].findOne({ where: {username: this.req.session.username}}).then(function(user)
     {
@@ -85,7 +83,7 @@ StandardSb.prototype.setAdmin = function(cb){
                 href: '/forumAdmin'
             }, 'Forum Admin'));
         }
-        cb();
+        cb.render(a, b);
     });
 };
 

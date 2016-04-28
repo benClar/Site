@@ -2,7 +2,7 @@
  * Created by root on 2/6/16.
  */
 
-var Promise         = require("bluebird");
+//var Promise         = require("bluebird");
 var express         = require('express');
 var https           = require('https');
 var http            = require('http');
@@ -11,16 +11,17 @@ var fs              = require('fs');
 var session         = require('express-session');
 var cookieParser    = require('cookie-parser');
 var SQLiteStore     = require('connect-sqlite3')(session);
-var bodyParser      = require('body-parser')
+var bodyParser      = require('body-parser');
 var sqlite3         = require('sqlite3').verbose();
 var db              = require('./models/index.js');
 var jRend           = require('./serverJavascript/jadeRendering.js');
+
 SECRET = 'S3CR37';
 
 SQLiteStoreOptions = {
     table   : 'sessions',
     db      : 'sessionsDB',
-    dir     : './db'
+    dir     : '../db'
 };
 
 cookieOptions = {
@@ -129,8 +130,9 @@ app.get('/', function(req, res) {
     console.log("GET /");
 
     var t = new jRend.StdTemplate(db, req);
-    var renderer = new jRend.Renderer(t, res);
-    renderer.render();
+    //var renderer = new jRend.Renderer(t, res);
+    //renderer.render();
+    res.render(t.template, t.contents);
 });
 
 //TODO: validate usernames/ passwords etc.
