@@ -3,6 +3,8 @@
  */
 "use strict";
 
+var Promise         = require("bluebird");
+
 function JSidebar(buttons){
         if(buttons == undefined){
             this.buttons = [];
@@ -32,15 +34,22 @@ function JTemplate(template, title, contentType, content, loggedIn, sidebar){
         };
 }
 
-
-function Renderer(template, res){
+function Renderer(res, template){
     this.template = template;
     this.res = res;
 }
 
 
 Renderer.prototype.render = function(){
-    this.res.render(this.template.template, this.template.contents);
+
+    var innerRender = function(sb){
+        console.log(sb);
+        this.res.render(this.template.template, this.template.contents)
+    };
+
+    var innerRenderB = innerRender.bind(this);
+
+    this.template.contents.sidebar.setAdmin().then(innerRenderB);
 };
 
 function StdTemplate(db, req){
@@ -53,38 +62,43 @@ function StdTemplate(db, req){
         'standardBody',
         'Text',
         req.session.loggedIn,
-        new StandardSb(req, db)
+        new StandardSb(db, req)
     );
 }
 
 StdTemplate.prototype = Object.create(JTemplate.prototype);
 StdTemplate.prototype.constructor = StdTemplate;
 
-function StandardSb(req, db) {
+function StandardSb(db, req) {
 
-    this.sidebar = new JSidebar();
-    this.buttons = this.sidebar.buttons;
-    this.sidebar.addButton(new module.exports.JButton({id: 'foo'}, 'foo'));
-    this.sidebar.addButton(new module.exports.JButton({id: 'bar'}, 'bar'));
-    if(req.session.loggedIn) {
-        this.sidebar.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
-    }
-    this.req = req;
+    JSidebar.call(this);
     this.db = db;
+    this.req = req;
+    this.addButton(new JButton({id: 'foo'}, 'foo'));
+    this.addButton(new JButton({id: 'bar'}, 'bar'));
+    if(this.req.session.loggedIn) {
+        this.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
+    }
 }
 
-StandardSb.prototype.setAdmin = function(cb, a, b){
-    var stdSB = this;
-    this.db['User'].findOne({ where: {username: this.req.session.username}}).then(function(user)
-    {
+StandardSb.prototype = Object.create(JSidebar.prototype);
+StandardSb.prototype.constructor = StandardSb;
+
+StandardSb.prototype.setAdmin = function(){
+
+    var setAdmin = function(user){
         if (user && user.userType == "admin") {
-            stdSB.sidebar.addButton(new module.exports.JButton({
+            console.log("ISADMIN");
+            this.addButton(new JButton({
                 id: 'forumAdminButton',
                 href: '/forumAdmin'
             }, 'Forum Admin'));
         }
-        cb.render(a, b);
-    });
+        return Promise.resolve(this);
+    };
+
+    var setAdminB = setAdmin.bind(this); // Bind context to current object
+    return this.db['User'].findOne({ where: {username: this.req.session.username}}).then(setAdminB);
 };
 
 module.exports.JSidebar = JSidebar;
