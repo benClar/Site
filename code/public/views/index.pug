@@ -12,10 +12,10 @@ html
     body
         .banner
             h1
-                | Banner!
+               | Banner!
         if loggedIn
             script(src="/javascripts/loggedIn.js")
-            +sb(renderedSidebar)
+            +sb(sidebar)
         else
             script(src="/javascripts/loggedOut.js")
             +login

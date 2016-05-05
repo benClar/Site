@@ -4,7 +4,7 @@
 
 var fs        = require('fs');
 
-var exceptions = ['server.js', 'app.js']
+var exceptions = ['server.js', 'app.js', 'routes.js']
 
 module.exports = function(shared){
     fs.readdirSync(__dirname).forEach(function(f){

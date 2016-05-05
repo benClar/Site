@@ -79,10 +79,26 @@ function StandardSb(db, req) {
     if(this.req.session.loggedIn) {
         this.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
     }
+    this.toRender = [this.setAdmin];
 }
 
 StandardSb.prototype = Object.create(JSidebar.prototype);
 StandardSb.prototype.constructor = StandardSb;
+
+
+StandardSb.prototype.render = function(funcToRender){
+
+    if(!toRender) {
+        for (var item = 0, nextItem = 1; item < this.toRender.length; ) {
+            if (nextItem < this.toRender.length){
+                this.toRender(this.toRender[item]).then(this.render(this.toRender[next]))
+            }
+
+
+        }
+    }
+
+};
 
 StandardSb.prototype.setAdmin = function(){
 
