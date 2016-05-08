@@ -58,7 +58,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-shared = {app: app, db: db, jRend:jRend};
+shared = {app: app, db: db};
 
 var rs = require('./routes.js')(shared);
 
@@ -90,6 +90,8 @@ app.post('/Logout',function(req,res){
     req.session.username = null;
     res.send({redirect: true, url: '/'});
 });
+
+
 
 app.post('/Register',function(req,res){
     console.log("POST - Register")
@@ -129,12 +131,9 @@ http.createServer(function (req, res) {
 
 app.get('/', function(req, res) {
     console.log("GET /");
-
-    var t = new jRend.StdTemplate(db, req);
-    //var renderer = new jRend.Renderer(t, res);
-    //renderer.render();
-    var r = new jRend.Renderer(res, t);
-    r.render();
+    var template = new jRend.StdTemplate(db, req);
+    var renderer = new jRend.Renderer(res, template);
+    renderer.render();
 });
 
 //TODO: validate usernames/ passwords etc.

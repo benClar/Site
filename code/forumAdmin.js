@@ -2,15 +2,17 @@
  * Created by root on 3/12/16.
  */
 
+"use strict"
+
+var refs            = require("./config/htmlrefs.js");
+var jRend           = require('./serverJavascript/jadeRendering.js');
+
 module.exports = function(shared){
 
-
-    function renderForumAdmin(req, res){
-        shared.jRend.renderJade("Forum Board Manager", "boardManagerBody", req.session.loggedIn, shared.jRend.renderSidebar);
-    }
-
-    shared.app.get('/forumAdmin', function(req,res){
-        shared.jRend.renderJade(shared.db, req, res, 'index', 'Home', "standardBody", 'Text Body', req.session.loggedIn, shared.jRend.stdSb);
+    shared.app.get(refs.FORUM_ADMIN, function(req,res){
+        console.log("GET - Forum Admin");
+        var template = new jRend.StdTemplate(shared.db, req);
+        var renderer = new jRend.Renderer(res, template);
+        renderer.render();
     });
-
 }

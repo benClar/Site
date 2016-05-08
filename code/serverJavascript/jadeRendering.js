@@ -5,6 +5,9 @@
 
 var Promise         = require("bluebird");
 var ll              = require("./linkedlist");
+var refs            = require("../config/htmlrefs");
+// links
+
 
 function JSidebar(buttons){
         if(buttons == undefined){
@@ -117,10 +120,9 @@ StandardSb.prototype.setAdmin = function(){
 
     var setAdmin = function(user){
         if (user && user.userType == "admin") {
-            console.log("ISADMIN");
             this.addButton(new JButton({
                 id: 'forumAdminButton',
-                href: '/forumAdmin'
+                href: refs.FORUM_ADMIN
             }, 'Forum Admin'));
         }
         return Promise.resolve(this);

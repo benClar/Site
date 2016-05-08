@@ -47,9 +47,19 @@ sequelize
             }
         }, {
             include: [ db['Account'] ]
-        }).then(function(user){
-            //
-        })
+            }
+        ).then(function(user){
+            db['Thread'].create(
+                {
+                    title: "Forums First Thread",
+                    content: "Thread Content",
+                }).then(function(thread) {
+                thread.setAuthor("Ben").then(function (thread) {
+                    thread.save()
+                });
+            });
+        });
+
     }, function (err) {
         console.log('An error occurred while creating the table:', err);
     });
