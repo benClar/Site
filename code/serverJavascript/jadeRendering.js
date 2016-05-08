@@ -4,6 +4,7 @@
 "use strict";
 
 var Promise         = require("bluebird");
+var ll              = require("./linkedlist");
 
 function JSidebar(buttons){
         if(buttons == undefined){
@@ -43,13 +44,30 @@ function Renderer(res, template){
 Renderer.prototype.render = function(){
 
     var innerRender = function(sb){
-        console.log(sb);
         this.res.render(this.template.template, this.template.contents)
     };
 
     var innerRenderB = innerRender.bind(this);
 
-    this.template.contents.sidebar.setAdmin().then(innerRenderB);
+    var toRenderList = this.template.getRenderables();
+
+    var lastRender = function(renderable){
+        if(renderable === null){
+            // no more functions required for rendering,
+            // call jade render.
+            return innerRenderB;
+        } else {
+            return renderable;
+        }
+    };
+    for(var i = 0; i < toRenderList.length; i++){
+        var invocator = toRenderList[i]['invoc'];
+        var renderables = toRenderList[i]['renderables'];
+        for(var toRender = renderables.next(); toRender;){
+            toRender.call(invocator).then(lastRender(toRender = renderables.next()));
+        }
+    }
+
 };
 
 function StdTemplate(db, req){
@@ -64,10 +82,20 @@ function StdTemplate(db, req){
         req.session.loggedIn,
         new StandardSb(db, req)
     );
+    this.renderables = new ll.LinkedList()
 }
 
 StdTemplate.prototype = Object.create(JTemplate.prototype);
 StdTemplate.prototype.constructor = StdTemplate;
+
+
+StdTemplate.prototype.getRenderables = function()  {
+    // Returns list of asynchronous functions that need to
+    // execute before template rendering can be done
+    return [{'invoc': this, 'renderables': this.renderables},
+            {'invoc': this.contents.sidebar, 'renderables':this.contents.sidebar.renderables}];
+    //return this.renderables.join([this.contents.sidebar.renderables]);
+}
 
 function StandardSb(db, req) {
 
@@ -79,26 +107,11 @@ function StandardSb(db, req) {
     if(this.req.session.loggedIn) {
         this.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
     }
-    this.toRender = [this.setAdmin];
+    this.renderables = new ll.LinkedList([this.setAdmin]);
 }
 
 StandardSb.prototype = Object.create(JSidebar.prototype);
 StandardSb.prototype.constructor = StandardSb;
-
-
-StandardSb.prototype.render = function(funcToRender){
-
-    if(!toRender) {
-        for (var item = 0, nextItem = 1; item < this.toRender.length; ) {
-            if (nextItem < this.toRender.length){
-                this.toRender(this.toRender[item]).then(this.render(this.toRender[next]))
-            }
-
-
-        }
-    }
-
-};
 
 StandardSb.prototype.setAdmin = function(){
 

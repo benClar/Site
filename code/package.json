@@ -26,6 +26,7 @@
     "bluebird"        : "3.3.4",
     "pug"             :"2.00-alpha6",
     "chai"            :"3.5.0",
-    "unit.js"        :"2.0.0"
+    "unit.js"         :"2.0.0",
+    "assert"          : "1.3.0"
   }
 }
