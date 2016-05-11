@@ -73,15 +73,15 @@ Renderer.prototype.render = function(){
 
 };
 
-function StdTemplate(db, req){
+function StdTemplate(db, req, contentMixin, content){
     this.db = db;
     this.req = req;
     // Call parent constructor
     JTemplate.call(this,
         'index',
         'Home',
-        'standardBody',
-        'Text',
+        contentMixin,
+        content,
         req.session.loggedIn,
         new StandardSb(db, req)
     );
@@ -105,8 +105,11 @@ function StandardSb(db, req) {
     JSidebar.call(this);
     this.db = db;
     this.req = req;
-    this.addButton(new JButton({id: 'foo'}, 'foo'));
-    this.addButton(new JButton({id: 'bar'}, 'bar'));
+    this.addButton(new JButton({id: 'Community'}, 'Community'));
+    this.addButton(new JButton({id: 'Account'}, 'Account'));
+    this.addButton(new JButton({id: 'Barracks'}, 'Barracks'));
+    this.addButton(new JButton({id: 'Alliance'}, 'Alliance'));
+    this.addButton(new JButton({id: 'Attack'}, 'Attack'));
     if(this.req.session.loggedIn) {
         this.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
     }

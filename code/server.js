@@ -131,7 +131,7 @@ http.createServer(function (req, res) {
 
 app.get('/', function(req, res) {
     console.log("GET /");
-    var template = new jRend.StdTemplate(db, req);
+    var template = new jRend.StdTemplate(db, req, 'standardBody', 'Text');
     var renderer = new jRend.Renderer(res, template);
     renderer.render();
 });
