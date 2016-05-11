@@ -18,6 +18,7 @@ module.exports = function(sequelize, DataTypes) {
             associate: function (models) {
                 User.belongsToMany(models.MilitaryWeapon, {through: 'UserMilitaryWeapon'});
                 User.belongsTo(models.Account);
+                User.hasMany(models.ForumThread, {foreignKey: 'author'});
             },
             alreadyRegistered: function(username, success, fail) {
                 User.findAndCountAll({where: {'username': username}}).then(function (result) {

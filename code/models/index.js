@@ -49,17 +49,13 @@ sequelize
             include: [ db['Account'] ]
             }
         ).then(function(user){
-            db['Thread'].create(
+            db['ForumThread'].create(
                 {
                     title: "Forums First Thread",
                     content: "Thread Content",
-                }).then(function(thread) {
-                thread.setAuthor("Ben").then(function (thread) {
-                    thread.save()
+                    author: 'Ben'
                 });
-            });
         });
-
     }, function (err) {
         console.log('An error occurred while creating the table:', err);
     });
