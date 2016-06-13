@@ -1,11 +1,11 @@
 //
    Created by root on 3/16/16.
 
-mixin boardManagerBody(boards)
+mixin BoardManagerBody(content)
     select.boards(name="select")
-    each board in boards
+    each board in content['boards']
         +option=board
 
 
-mixin standardBody(message)
-    h1= message
+mixin StandardBody(content)
+    h1= content.text

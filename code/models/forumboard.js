@@ -4,14 +4,17 @@
 
 "use strict"
 
+var modelrefs = require('../config/modelrefs');
+
+
 module.exports = function(sequelize, DataTypes) {
-    var ForumBoard = sequelize.define("ForumBoard", {
-        name: DataTypes.STRING,
-        description: DataTypes.STRING
+    var ForumBoard = sequelize.define(modelrefs.BOARD_TABLE, {
+        board: {type: DataTypes.STRING, primaryKey: true},
+        description: DataTypes.STRING,
     }, {
         classMethods: {
             associate: function (models) {
-                //ForumBoard.hasMany(models.User);
+                ForumBoard.belongsToMany(models.User, { through: 'ForumBoardMods'})
             }
         },
         instanceMethods: {

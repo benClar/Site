@@ -16,9 +16,11 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         classMethods: {
             associate: function (models) {
-                User.belongsToMany(models.MilitaryWeapon, {through: 'UserMilitaryWeapon'});
+                User.belongsToMany(models.ForumBoard, {through: 'UserMilitaryWeapon'});
                 User.belongsTo(models.Account);
                 User.hasMany(models.ForumThread, {foreignKey: 'author'});
+                User.belongsToMany(models.ForumBoard, {as:'moderator', through: 'ForumBoardMods'});
+                User.belongsToMany(models.ForumSection, {as:'superModerato', through: 'SectionSuperModerators'});
             },
             alreadyRegistered: function(username, success, fail) {
                 User.findAndCountAll({where: {'username': username}}).then(function (result) {

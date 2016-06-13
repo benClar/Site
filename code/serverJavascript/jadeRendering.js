@@ -6,6 +6,7 @@
 var Promise         = require("bluebird");
 var ll              = require("./linkedlist");
 var refs            = require("../config/htmlrefs");
+var modelrefs       = require('../config/modelrefs');
 // links
 
 
@@ -64,6 +65,7 @@ Renderer.prototype.render = function(){
         }
     };
     for(var i = 0; i < toRenderList.length; i++){
+        // iterate through each object's renderables and call
         var invocator = toRenderList[i]['invoc'];
         var renderables = toRenderList[i]['renderables'];
         for(var toRender = renderables.next(); toRender;){
@@ -91,13 +93,50 @@ function StdTemplate(db, req, contentMixin, content){
 StdTemplate.prototype = Object.create(JTemplate.prototype);
 StdTemplate.prototype.constructor = StdTemplate;
 
-
 StdTemplate.prototype.getRenderables = function()  {
     // Returns list of asynchronous functions that need to
     // execute before template rendering can be done
     return [{'invoc': this, 'renderables': this.renderables},
-            {'invoc': this.contents.sidebar, 'renderables':this.contents.sidebar.renderables}];
+            {'invoc': this.contents.sidebar, 'renderables':this.contents.sidebar.renderables},
+            {'invoc': this.contents.content, 'renderables':this.contents.content.renderables}];
     //return this.renderables.join([this.contents.sidebar.renderables]);
+}
+
+//TODO: Just a default content object for now: what will the standard one look like?
+function HomeContent(text, db, req){
+    this.text = text;
+    this.db = db;
+    this.req = req;
+}
+
+function ForumAdminContent(db, req){
+    this.settableAttr = [modelrefs.BOARD_TABLE, modelrefs.SECTION_TABLE];
+    this.sections = [];
+    this.boards = [];
+    this.db = db;
+    this.req = db;
+    this.renderables = new ll.LinkedList([this.setForumStructures]);
+}
+
+ForumAdminContent.prototype.setForumStructures = function(){
+
+    var schemaToAttrMap = {}
+    schemaToAttrMap[modelrefs.BOARD_TABLE] = 'boards';
+    schemaToAttrMap[modelrefs.SECTION_TABLE] = 'sections';
+
+    var setboards = function(attr, data){
+        console.log("Setting Forum Admin Attribute");
+        console.log(attr);
+        this[schemaToAttrMap[attr]] = this.db.Sequelize.Promise.map(data, function(rec){return rec.toJSON()});
+        return this[schemaToAttrMap[attr]];
+    }
+
+    var getData = function(attr) {
+        var setboardsB = setboards.bind(this, attr);
+        return this.db[attr].findAll({where: {}}).then(setboardsB);
+    }
+    var getDataB = getData.bind(this);
+    return Promise.each(this.settableAttr, getDataB)
 }
 
 function StandardSb(db, req) {
@@ -128,7 +167,7 @@ StandardSb.prototype.setAdmin = function(){
                 href: refs.FORUM_ADMIN
             }, 'Forum Admin'));
         }
-        return Promise.resolve(this);
+        return Promise.resolve(this); // TODO: Should this resolving be user?
     };
 
     var setAdminB = setAdmin.bind(this); // Bind context to current object
@@ -141,3 +180,5 @@ module.exports.JTemplate  = JTemplate;
 module.exports.Renderer = Renderer;
 module.exports.StandardSb = StandardSb;
 module.exports.StdTemplate = StdTemplate;
+module.exports.ForumAdminContent = ForumAdminContent;
+module.exports.HomeContent = HomeContent;
