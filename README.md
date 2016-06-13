@@ -18,6 +18,7 @@ The game and forum should be closely tied: in game benefits for posting, forum f
 
 ## ToDo (In order)
 
+- [ ] Registration mechanic
 - [ ] Forum Admin Page
 - [ ] Game Admin Page
 - [ ] Forum  ORM DB schema
