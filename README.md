@@ -24,8 +24,8 @@ The game and forum should be closely tied: in game benefits for posting, forum f
 - [ ] Game database ORM DB schema
 - [ ] Races Implementation
 - [ ] Item Implementation
-- [ ] Attack Game Mechanic
-- [ ] Sabotage
+- [ ] Attack / Defense Game Mechanic
+- [ ] Sabotage Game Mechanic
 - [ ] Clan Community Implementation 
 - [ ] Clan Game Mechanic Implementation
 - [ ] Front-end Website design 
