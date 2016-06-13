@@ -7,13 +7,13 @@ Server and front end for community focused, text based (at first!) MMORPG.
 
 ##More Detail
 
-#Core Gameplay
+###Core Gameplay
 Users will be ranked based on their gold/ Assets.  Users can select others from this ranking to attack, to steal gold and damage other player's assets.
 
-#Clans
+###Clans
 Users can create and join clans for attack/ defensive benefits.  Clan leaders can purchase clan items and manage clan financaes to improve benefits for members.
 
-#Community
+###Community
 The game and forum should be closely tied: in game benefits for posting, forum features that support clans.
 
 ## ToDo (In order)
