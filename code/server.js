@@ -18,8 +18,9 @@ require('./models/index.js')().then(function(resolvedDb){
     var sqlite3         = require('sqlite3').verbose();
 
     var jRend           = require('./serverJavascript/jadeRendering.js');
-    Promise.promisifyAll(jRend);
+    //Promise.promisifyAll(jRend);
     var pug             = require('pug');
+
     SECRET = 'S3CR37';
 
     SQLiteStoreOptions = {

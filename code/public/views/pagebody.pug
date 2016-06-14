@@ -3,9 +3,11 @@
 
 mixin BoardManagerBody(content)
     select.boards(name="select")
-    each board in content['boards']
-        +option=board
-
+        each board in content['boards']
+            option(value=board['board']) #{board['board']}
+    select.boards(name="select")
+        each section in content['sections']
+            option(value=section['section']) #{section['section']}
 
 mixin StandardBody(content)
     h1= content.text

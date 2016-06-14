@@ -69,7 +69,7 @@ function officalInitaliseDb() {
                                     board: "First Board",
                                     description: "Forums First Board"
                                 });
-                        });;
+                        });
                 });
         }, function (err) {
             console.log('An error occurred while creating the table:', err);

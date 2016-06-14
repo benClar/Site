@@ -48,30 +48,42 @@ function Renderer(res, template){
 Renderer.prototype.render = function(){
 
     var innerRender = function(sb){
-        this.res.render(this.template.template, this.template.contents)
+        this.res.render(this.template.template, this.template.contents);
     };
 
     var innerRenderB = innerRender.bind(this);
 
-    var toRenderList = this.template.getRenderables();
+    var renderables = this.template.getRenderables();
 
-    var lastRender = function(renderable){
-        if(renderable === null){
-            // no more functions required for rendering,
-            // call jade render.
-            return innerRenderB;
-        } else {
-            return renderable;
-        }
-    };
-    for(var i = 0; i < toRenderList.length; i++){
-        // iterate through each object's renderables and call
-        var invocator = toRenderList[i]['invoc'];
-        var renderables = toRenderList[i]['renderables'];
-        for(var toRender = renderables.next(); toRender;){
-            toRender.call(invocator).then(lastRender(toRender = renderables.next()));
-        }
-    }
+    //var lastRender = function(renderable){
+    //    if(renderable === null){
+    //        // no more functions required for rendering,
+    //        // call jade render.
+    //        return innerRenderB;
+    //    } else {
+    //        return renderable;
+    //    }
+    //};
+    //for(var i = 0; i < toRenderList.length; i++){
+    //    // iterate through each object's renderables and call
+    //    var invocator = toRenderList[i]['invoc'];
+    //    var renderables = toRenderList[i]['renderables'];
+    //    for(var toRender = renderables.next(); toRender;){
+    //        toRender.call(invocator).then(lastRender(toRender = renderables.next()));
+    //    }
+    //}
+    Promise.all(
+        renderables.map(function(renderableInfo){
+            return Promise.map(renderableInfo['renderables'], function(renderable){
+                return renderable.call(renderableInfo['invoc'])
+            });
+        })
+    ).then(innerRenderB);
+    //Promise.each(renderables, function(renderableInfo){
+    //    Promise.each(renderableInfo['renderables'], function(renderable){
+    //        renderable.call(renderableInfo['invoc'])
+    //    });
+    //}).then(innerRenderB);
 
 };
 
@@ -87,7 +99,7 @@ function StdTemplate(db, req, contentMixin, content){
         req.session.loggedIn,
         new StandardSb(db, req)
     );
-    this.renderables = new ll.LinkedList()
+    this.renderables = []
 }
 
 StdTemplate.prototype = Object.create(JTemplate.prototype);
@@ -99,7 +111,6 @@ StdTemplate.prototype.getRenderables = function()  {
     return [{'invoc': this, 'renderables': this.renderables},
             {'invoc': this.contents.sidebar, 'renderables':this.contents.sidebar.renderables},
             {'invoc': this.contents.content, 'renderables':this.contents.content.renderables}];
-    //return this.renderables.join([this.contents.sidebar.renderables]);
 }
 
 //TODO: Just a default content object for now: what will the standard one look like?
@@ -115,7 +126,7 @@ function ForumAdminContent(db, req){
     this.boards = [];
     this.db = db;
     this.req = db;
-    this.renderables = new ll.LinkedList([this.setForumStructures]);
+    this.renderables = [this.setForumStructures];
 }
 
 ForumAdminContent.prototype.setForumStructures = function(){
@@ -127,8 +138,12 @@ ForumAdminContent.prototype.setForumStructures = function(){
     var setboards = function(attr, data){
         console.log("Setting Forum Admin Attribute");
         console.log(attr);
-        this[schemaToAttrMap[attr]] = this.db.Sequelize.Promise.map(data, function(rec){return rec.toJSON()});
-        return this[schemaToAttrMap[attr]];
+        var setAttr = function(records){
+            console.log(records);
+            this[schemaToAttrMap[attr]] = records;
+        }
+        var setAttrB = setAttr.bind(this)
+        return this.db.Sequelize.Promise.map(data, function(rec){return rec.toJSON()}).then(setAttrB);
     }
 
     var getData = function(attr) {
@@ -152,7 +167,7 @@ function StandardSb(db, req) {
     if(this.req.session.loggedIn) {
         this.addButton(new module.exports.JButton({id: 'logoutButton'}, 'Logout'));
     }
-    this.renderables = new ll.LinkedList([this.setAdmin]);
+    this.renderables = [this.setAdmin];
 }
 
 StandardSb.prototype = Object.create(JSidebar.prototype);
